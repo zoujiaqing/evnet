@@ -1,4 +1,6 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.2)
+
+set (CMAKE_CXX_STANDARD 11)
 
 project (safe-evpp C CXX)
 
@@ -27,13 +29,19 @@ if (UNIX)
          -std=c++11
     )
     include_directories (${PROJECT_SOURCE_DIR}
-                         ${PROJECT_SOURCE_DIR}/3rdparty)
+                         ${PROJECT_SOURCE_DIR}/evpp
+                         ${PROJECT_SOURCE_DIR}/third_party
+                         ${PROJECT_SOURCE_DIR}/third_party/glog/src
+                         ${PROJECT_SOURCE_DIR}/third_party/gflag/include
+                         ${PROJECT_SOURCE_DIR}/third_party/libevent/include)
+                         
+    link_directories(${PROJECT_SOURCE_DIR}/lib/darwin)
 else (UNIX)
 set (CXX_FLAGS -DWIN32 -D_WIN32 -EHsc)
     set(VcpkgRoot ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET})
     include_directories(${VcpkgRoot}/include
                         ${PROJECT_SOURCE_DIR}
-                        ${PROJECT_SOURCE_DIR}/3rdparty/wininclude)
+                        ${PROJECT_SOURCE_DIR}/third_party/wininclude)
 
     # On windows, Debug mode
     link_directories(${VcpkgRoot}/debug/lib ${VcpkgRoot}/debug/lib/manual-link)
@@ -86,14 +94,17 @@ message (STATUS "THRIFT_INCLUDE_DIR " ${THRIFT_INCLUDE_DIR})
 message (STATUS "THRIFT_LIBRARY " ${THRIFT_LIBRARY})
 
 add_subdirectory (evpp)
-add_subdirectory (apps)
-add_subdirectory (labs)
+#add_subdirectory (apps)
+#add_subdirectory (labs)
 
 if (NOT EVPP_VCPKG_BUILD)
-    add_subdirectory (test)
+#    add_subdirectory (test)
     add_subdirectory (examples)
-    add_subdirectory (benchmark)
+#    add_subdirectory (benchmark)
 endif ()
+
+include_directories(${ANDROID_SYSROOT}/usr/include/arm-linux-androideabi)
+include_directories(${ANDROID_SYSROOT}/usr/include/arm-linux-androideabi)
 
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include (utils)
